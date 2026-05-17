@@ -6,7 +6,7 @@ Title: NVIDIA evaluation and AI breakthroughs analysis
 
 Team members and roles:
 
-* **Pattasavich Meenandhavech**: Team Lead, Report
+* **Pattasavich Meenandhavech**: Team Lead, Synthesis, Report
 * **Agathiyan Akilan**: Descriptive Analyst
 * **Tony Nicholas Panneer Jesuraja**: Diagnostic Analyst
 * **John Fel Maulion**: Data Engineer
