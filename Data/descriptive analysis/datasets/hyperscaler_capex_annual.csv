@@ -1,0 +1,8 @@
+year,microsoft_capex,google_capex,meta_capex,amazon_capex,total_hyperscaler_capex,source
+2019,15441,23548,4088,24053,67130,SEC 10-K filings
+2020,15441,22281,6332,40140,84194,SEC 10-K filings
+2021,20622,24273,18690,55396,118981,SEC 10-K filings
+2022,23886,31485,32254,60144,147769,SEC 10-K filings
+2023,35547,32251,28101,52729,148628,SEC 10-K filings
+2024,55661,52548,37651,82739,228599,SEC 10-K filings
+2025,118000,91500,72200,134700,416400,SEC 10-K filings (platformonomics.com 2025 retrospective)
