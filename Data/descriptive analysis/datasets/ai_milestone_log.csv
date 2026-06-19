@@ -1,0 +1,16 @@
+date,event,epoch,significance
+30/9/2012,AlexNet wins ImageNet — deep learning proven at scale,Pre-Attention,High
+10/6/2014,Generative Adversarial Networks (GANs) introduced,Pre-Attention,High
+11/12/2015,OpenAI founded,Pre-Attention,Medium
+12/6/2017,'Attention is All You Need' — Transformer architecture published,Transition,Critical
+11/10/2018,BERT released by Google,Transition,High
+14/2/2019,GPT-2 released by OpenAI,Transition,High
+28/5/2020,GPT-3 released — 175B parameters,Transition,Critical
+1/9/2020,NVIDIA acquires Mellanox (networking for AI clusters),Transition,High
+22/3/2022,NVIDIA H100 (Hopper) GPU announced,Transition,Critical
+22/8/2022,Stable Diffusion released — generative AI goes public,GenAI Explosion,High
+30/11/2022,ChatGPT launched — global proof-of-concept for LLMs,GenAI Explosion,Critical
+14/3/2023,GPT-4 released,GenAI Explosion,High
+24/5/2023,NVIDIA crosses $1T market cap for first time,GenAI Explosion,Critical
+18/3/2024,NVIDIA Blackwell architecture announced (B100/B200),GenAI Explosion,High
+6/1/2025,NVIDIA briefly becomes world's most valuable company,GenAI Explosion,Critical
