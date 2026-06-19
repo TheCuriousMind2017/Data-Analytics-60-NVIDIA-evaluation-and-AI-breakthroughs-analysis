@@ -1,0 +1,8 @@
+# Ignore SEC Edgar cache
+sec_cache/
+
+# Ignore Python virtual environment
+venv/
+
+# Ignore __pycache__
+__pycache__/
