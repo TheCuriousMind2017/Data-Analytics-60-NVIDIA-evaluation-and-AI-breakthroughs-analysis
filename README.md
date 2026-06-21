@@ -10,7 +10,7 @@ A reproducible, data-driven study of **NVIDIA's market performance and earnings 
 
 Before 2017, NVIDIA was valued largely as a leader in the cyclical gaming and graphics market. The Transformer architecture (2017) shifted the AI field toward large-scale "brute-force" training of language models, and ChatGPT (late 2022) served as a global proof-of-concept that triggered an unprecedented surge in demand for high-performance compute. Over the window we study, NVIDIA's split-adjusted quarter-end price rose roughly **1,100% (about 12×)** — from $14.58 at the end of 2022Q4, the quarter ChatGPT launched, to $174.20 in 2026Q1 (figures as of the 2026Q1 data cut).
 
-This project asks whether NVIDIA's valuation and revenue mix exhibit a *structural change* that aligns, in time, with these AI milestones — and if so, which milestone the change lines up with most cleanly. NVIDIA is analysed across four eras: a **pre-Attention** baseline, the **CNN** era (2012–2017), the **developmental scaling / Transformer** era (2017–2022), and the **generative-AI** era (2022–present), and is compared against semiconductor peers (AMD, Intel) and market benchmarks (Nasdaq-100, PHLX Semiconductor Index).
+This project asks whether NVIDIA's valuation and revenue mix exhibit a *structural change* that aligns, in time, with these AI milestones — and if so, which milestone the change lines up with most cleanly. NVIDIA is analysed across three eras: a **pre-Attention** baseline, the **CNN** era (2012–2017), the **developmental scaling / Transformer** era (2017–2022), and the **generative-AI** era (2022–present), and is compared against semiconductor peers (AMD, Intel) and market benchmarks (Nasdaq-100, PHLX Semiconductor Index).
 
 ## Research Questions
 
