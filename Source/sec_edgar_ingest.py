@@ -569,7 +569,7 @@ def main():
                     help="dump raw deduped facts, e.g. --inspect AMZN capex 2017")
     ap.add_argument("--identity", default=IDENTITY, help="SEC User-Agent string")
     ap.add_argument("--outdir", default="Data/outputs", type=Path)
-    ap.add_argument("--cachedir", default="Data/inputs/sec_cache", type=Path)
+    ap.add_argument("--cachedir", default="Data/sec_cache", type=Path)
     args = ap.parse_args()
     if args.selftest:
         sys.exit(selftest())
