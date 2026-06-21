@@ -1,0 +1,51 @@
+# ---------------------------------------------------------------------------
+# Requirements — NVIDIA valuation study (data pipeline + analysis)
+# Python 3.10+  (tested on 3.12)
+#
+# One global file for the whole project. Two logical groups: the data pipeline
+# under Source/, and the analysis notebooks (descriptive + diagnostic) that
+# cover the six analytical pillars. The pipeline group alone rebuilds every
+# dataset; the analysis group is what regenerates the figures.
+#
+# Module dependency map:
+#   Source/sec_edgar_ingest.py     ->  pandas, requests
+#   Source/yahoo_prices_ingest.py  ->  pandas, yfinance
+#   Source/segments_ingest.py      ->  pandas
+#   Source/join_quarterly.py       ->  pandas
+#   descriptive analysis/*.ipynb   ->  pandas, numpy, matplotlib, scipy, ruptures
+#   diagnostic  analysis/*.ipynb   ->  pandas, numpy, matplotlib, scipy, statsmodels, ruptures
+#
+# Pillar -> library:
+#   P1 structural breaks  ->  ruptures (changepoints), statsmodels (break/Chow tests)
+#   P2 peer divergence    ->  pandas (rolling corr), matplotlib, scipy (significance)
+#   P3 revenue mix        ->  matplotlib (stacked area), pandas
+#   P4 valuation decomp.  ->  matplotlib (waterfall/scatter), pandas
+#   P5 margin expansion   ->  matplotlib, pandas
+#   P6 capex linkage      ->  scipy / statsmodels (cross-corr lead-lag), matplotlib
+#   diagnostic hypothesis tests (5 research Qs)  ->  scipy.stats, statsmodels
+#
+# Install:   pip install -r requirements.txt
+# Lock:      pip freeze > requirements.lock      (exact reproducible pin)
+# ---------------------------------------------------------------------------
+
+# --- core / shared --------------------------------------------------------
+pandas>=2.2          # tested 3.0.2  - dataframes, resampling, pivots, joins, rolling
+numpy>=1.23          # numerics under pandas + all chart math (also pulled by scipy/statsmodels)
+
+# --- data pipeline (Source/) ---------------------------------------------
+requests>=2.31       # tested 2.33.1 - SEC EDGAR companyfacts fetch (User-Agent + retry)
+yfinance>=0.2.40     # tested 1.4.1  - Yahoo Finance daily prices / indices
+
+# --- analysis: plotting + notebooks (all pillars) ------------------------
+matplotlib>=3.8      # every chart C1-C17: lines, stacked area, dual-axis, scatter, waterfall
+jupyterlab>=4.0      # run the descriptive / diagnostic notebooks
+                     #   (running .ipynb inside VS Code? `ipykernel>=6.25` alone is enough)
+
+# --- analysis: statistics (P1, P2, P6 + diagnostic hypothesis tests) ------
+scipy>=1.11          # t-tests, correlation tests, signal cross-correlation (P6 lead/lag)
+statsmodels>=0.14    # OLS/regression, time series, structural-break / Chow tests (P1, diagnostic)
+ruptures>=1.1        # offline changepoint detection for structural breaks (P1: log price & revenue)
+
+# --- optional -------------------------------------------------------------
+# seaborn>=0.13      # nicer correlation heatmaps / regplots if preferred over raw matplotlib
+# tabulate>=0.9      # df.to_markdown() for the breakpoint (T1) and era-comparison (T2) tables
