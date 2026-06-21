@@ -36,6 +36,7 @@ be run in your own environment.
 from __future__ import annotations
 import argparse
 import json
+import os
 import sys
 import time
 from datetime import date, datetime, timedelta
@@ -53,7 +54,8 @@ except ImportError:  # only needed for the live pull, not for --selftest
 # --------------------------------------------------------------------------- #
 # Config
 # --------------------------------------------------------------------------- #
-IDENTITY = "Pattanasavich Meenandhavech paul_meenan@hotmail.com"  # SEC User-Agent
+# SEC User-Agent is read from the SEC_IDENTITY env var or the --identity flag.
+# Nothing is hard-coded, so the repo is safe to publish.
 START = date(2010, 1, 1)
 END = date(2025, 12, 31)
 REQUESTS_PER_SEC = 5  # comfortably under SEC's ~10/s ceiling
@@ -567,16 +569,29 @@ def main():
     ap.add_argument("--selftest", action="store_true", help="run offline logic tests")
     ap.add_argument("--inspect", nargs=3, metavar=("TICKER", "METRIC", "YEAR"),
                     help="dump raw deduped facts, e.g. --inspect AMZN capex 2017")
-    ap.add_argument("--identity", default=IDENTITY, help="SEC User-Agent string")
+    ap.add_argument("--identity", default=None,
+                    help="SEC User-Agent, e.g. 'Your Name you@email.com' "
+                         "(or set the SEC_IDENTITY environment variable)")
     ap.add_argument("--outdir", default="Data/outputs", type=Path)
     ap.add_argument("--cachedir", default="Data/sec_cache", type=Path)
     args = ap.parse_args()
     if args.selftest:
         sys.exit(selftest())
+
+    identity = args.identity or os.environ.get("SEC_IDENTITY")
+    if not identity:
+        sys.exit(
+            "No SEC contact configured. SEC's fair-access policy requires a "
+            "User-Agent with a real contact.\n"
+            '  PowerShell:  $env:SEC_IDENTITY = "Your Name you@email.com"\n'
+            '  bash/zsh:    export SEC_IDENTITY="Your Name you@email.com"\n'
+            '  or pass:     --identity "Your Name you@email.com"'
+        )
+
     if args.inspect:
-        inspect(args.identity, args.inspect[0], args.inspect[1], args.inspect[2], args.cachedir)
+        inspect(identity, args.inspect[0], args.inspect[1], args.inspect[2], args.cachedir)
         return
-    run(args.identity, args.outdir, args.cachedir)
+    run(identity, args.outdir, args.cachedir)
 
 
 if __name__ == "__main__":
