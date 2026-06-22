@@ -10,11 +10,11 @@ A reproducible, data-driven study of **NVIDIA's market performance and earnings 
 
 Before 2017, NVIDIA was valued largely as a leader in the cyclical gaming and graphics market. The Transformer architecture (2017) shifted the AI field toward large-scale "brute-force" training of language models, and ChatGPT (late 2022) served as a global proof-of-concept that triggered an unprecedented surge in demand for high-performance compute. Over the window we study, NVIDIA's split-adjusted quarter-end price rose roughly **1,100% (about 12×)** — from $14.58 at the end of 2022Q4, the quarter ChatGPT launched, to $174.20 in 2026Q1 (figures as of the 2026Q1 data cut).
 
-This project asks whether NVIDIA's valuation and revenue mix exhibit a *structural change* that aligns, in time, with these AI milestones — and if so, which milestone the change lines up with most cleanly. NVIDIA is analysed across three eras: a **pre-Attention** baseline, the **CNN** era (2012–2017), the **developmental scaling / Transformer** era (2017–2022), and the **generative-AI** era (2022–present), and is compared against semiconductor peers (AMD, Intel) and market benchmarks (Nasdaq-100, PHLX Semiconductor Index).
+This project asks whether NVIDIA's valuation and revenue mix exhibit a *structural change* that aligns, in time, with these AI milestones — and if so, which milestone the change lines up with most cleanly. NVIDIA is analysed across three eras: a **Pre-Attention / CNN** era (2010–2017), the **developmental scaling / Transformer** era (2017–2022), and the **generative-AI** era (2022–present), and is compared against semiconductor peers (AMD, Intel) and market benchmarks (Nasdaq-100, PHLX Semiconductor Index).
 
 ## Research Questions
 
-1. How has the correlation between NVIDIA and it peers (AMD and Intel) and the Nasdaq-100 evolved as the company's revenue model shifted from gaming-centric to data-center-centric?
+1. How has the correlation between NVIDIA and its peers (AMD and Intel) and the Nasdaq-100 evolved as the company's revenue model shifted from gaming-centric to data-center-centric?
 2. How do NVIDIA's valuation metrics (P/E, P/S, market cap) in the post-2017 "scaling" era compare with the pre-Attention period?
 3. Can the data pinpoint a specific inflection point where the market's pricing of NVIDIA shifts from a hardware vendor toward a systemic AI supplier?
 4. How does NVIDIA's valuation trajectory after the 2017 architectural breakthrough compare with its earlier historical cyclicality?
@@ -142,7 +142,7 @@ The work is organised around six analytical pillars: (1) structural breaks, (2) 
 
 - **Non-causal by design.** The claim throughout is *temporal alignment* — a structural break in NVIDIA's series that coincides with an AI milestone — not that the milestone caused it. A headline finding: NVIDIA's Data Center revenue overtakes Gaming in fiscal-year 2023, which maps to **calendar 2022 — the ChatGPT year**.
 - **NVIDIA fiscal-year mapping.** NVIDIA's fiscal year ends in late January, so fiscal year *n* corresponds to roughly calendar year *n − 1* (e.g. FY2023 ≈ calendar 2022). This mapping is applied consistently so segment data lines up with the price/earnings timeline.
-- **Era definitions.** Baseline (2010Q1–2012Q2), CNN (2012Q3–2017Q2), Transformer (2017Q3–2022Q3), and Generative-AI (2022Q4–2026Q1).
+- **Era definitions.** Pre-Attention / CNN (2010Q1–2017Q2), Transformer (2017Q3–2022Q3), and Generative-AI (2022Q4–2026Q1) — with the AlexNet milestone (2012Q3) annotated within the first band.
 - **Known data-quality notes.** Early NVIDIA segment years carry a sizeable "unallocated" band (categories not separately disclosed), and one figure (FY2016/FY2017 Data Center) is flagged as a possible transcription duplicate pending verification against the source 10-K. Hyperscaler coverage in the panel is capital-expenditure only; their revenue and margins are intentionally not pulled.
 
 For the full methodology — ingestion architecture, the technical challenges encountered, and how each was resolved — see `Documentation & Reports/`.
