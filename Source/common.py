@@ -41,6 +41,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "Data" / "outputs"
 PANEL_CSV = DATA_DIR / "master_quarterly_panel.csv"
 SEGMENTS_CSV = DATA_DIR / "nvda_segments_annual.csv"
+DAILY_CSV = DATA_DIR / "yahoo_prices_daily.csv"
 
 
 # --------------------------------------------------------------------------- #
@@ -100,7 +101,7 @@ ERAS: list[Era] = [
 # band boundaries they define.
 MILESTONES: list[Milestone] = [
     Milestone("AlexNet (ImageNet)", "2012Q3"),
-    Milestone("Transformer",        "2017Q3"),
+    Milestone("Attention/Transformer", "2017Q3"),
     Milestone("ChatGPT",            "2022Q4"),
 ]
 
@@ -120,8 +121,8 @@ TICKER_COLORS: dict[str, str] = {
     "NVDA": "#76b900",   # NVIDIA green
     "AMD":  "#ed1c24",   # AMD red
     "INTC": "#0071c5",   # Intel blue
-    "NDX":  "#555555",   # Nasdaq-100 (benchmark)
-    "SOX":  "#9467bd",   # PHLX Semiconductor (benchmark)
+    "NDX":  "#ff7f0e",   # Nasdaq-100 (benchmark) — vivid orange
+    "SOX":  "#9c27b0",   # PHLX Semiconductor (benchmark) — vivid purple
     # hyperscalers (Pillar 6 capex)
     "MSFT":  "#f25022",
     "GOOGL": "#4285f4",
@@ -161,8 +162,11 @@ def color(ticker: str) -> str:
 def load_panel(path: str | Path | None = None) -> pd.DataFrame:
     """Master quarterly panel with parsed `date` and `period`, plus an `era` column."""
     df = pd.read_csv(Path(path) if path else PANEL_CSV)
-    df["date"] = pd.to_datetime(df["quarter_end_date"])
+    # Derive the plotting date from calendar_quarter (always present) rather than
+    # quarter_end_date, which is empty for price-less tickers like the hyperscalers
+    # (capex only). This also aligns every ticker exactly on quarter-end dates.
     df["period"] = df["calendar_quarter"].map(lambda q: pd.Period(q, "Q"))
+    df["date"] = df["period"].map(lambda p: p.end_time.normalize())
     df["era"] = df["calendar_quarter"].map(era_of)
     return df.sort_values(["ticker", "date"]).reset_index(drop=True)
 
@@ -172,6 +176,31 @@ def load_segments(path: str | Path | None = None) -> pd.DataFrame:
     df = pd.read_csv(Path(path) if path else SEGMENTS_CSV)
     df["date"] = pd.to_datetime(dict(year=df["calendar_year"], month=7, day=1))
     return df.sort_values("calendar_year").reset_index(drop=True)
+
+
+def load_daily(path: str | Path | None = None) -> pd.DataFrame:
+    """Daily adjusted-close prices (long format: date, ticker, adj_close).
+
+    Used for the high-resolution price, relative-strength, and rolling-correlation
+    charts, where the quarterly panel is too coarse.
+    """
+    df = pd.read_csv(Path(path) if path else DAILY_CSV, parse_dates=["date"])
+    return df.sort_values(["ticker", "date"]).reset_index(drop=True)
+
+
+def daily_index(daily: pd.DataFrame, tickers: list[str] | None = None,
+                base: float = 100.0) -> pd.DataFrame:
+    """Wide daily price series rebased to `base` at the first common date.
+
+    Pivots to date x ticker, restricts to `tickers` (in order), aligns to dates
+    where all selected tickers have data, and rebases each to `base` at the first
+    such date — for cumulative-return and relative-strength charts.
+    """
+    px = daily.pivot_table(index="date", columns="ticker", values="adj_close").sort_index()
+    if tickers:
+        px = px[tickers]
+    px = px.dropna(how="any")
+    return px / px.iloc[0] * base
 
 
 def ticker_series(panel: pd.DataFrame, ticker: str, col: str) -> pd.DataFrame:
@@ -200,11 +229,24 @@ def apply_style() -> None:
         "figure.dpi": 110,
         "savefig.dpi": 150,
         "savefig.bbox": "tight",
+        # pure white canvas (figure, axes, and exported PNG)
+        "figure.facecolor": "white",
+        "axes.facecolor": "white",
+        "savefig.facecolor": "white",
+        "savefig.edgecolor": "white",
+        # dark text/ticks/spines for maximum contrast on white
+        "text.color": "#1a1a1a",
+        "axes.labelcolor": "#1a1a1a",
+        "axes.titlecolor": "#1a1a1a",
+        "xtick.color": "#1a1a1a",
+        "ytick.color": "#1a1a1a",
+        "axes.edgecolor": "#333333",
         "axes.spines.top": False,
         "axes.spines.right": False,
         "axes.grid": True,
         "axes.axisbelow": True,
-        "grid.alpha": 0.25,
+        "grid.color": "#b3b3b3",
+        "grid.alpha": 0.30,
         "grid.linewidth": 0.6,
         "font.size": 10,
         "axes.titlesize": 12.5,
@@ -238,7 +280,7 @@ def add_milestones(ax, *, label: bool = True, label_fontsize: float = 8) -> None
         if label:
             ax.text(m.date, 0.975, f"{m.name} ", transform=ax.get_xaxis_transform(),
                     rotation=90, ha="right", va="top", fontsize=label_fontsize,
-                    color=MILESTONE_COLOR, zorder=3,
+                    color=MILESTONE_COLOR, zorder=3, clip_on=True,
                     bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.55))
 
 
@@ -258,6 +300,30 @@ def annotate(ax, *, eras: bool = True, milestones: bool = True,
         add_era_bands(ax, label=era_labels)
     if milestones:
         add_milestones(ax, label=milestone_labels)
+
+
+def _frac_year(ts) -> float:
+    """Timestamp -> fractional calendar year (e.g. 2017-07-01 -> ~2017.5)."""
+    return ts.year + (ts.dayofyear - 1) / 365.25
+
+
+def add_era_bands_year(ax, *, alpha: float = 0.10) -> None:
+    """Era shading for an integer-year x-axis (annual bar charts)."""
+    for era in ERAS:
+        ax.axvspan(_frac_year(era.start), _frac_year(era.end),
+                   color=era.color, alpha=alpha, lw=0, zorder=0)
+
+
+def add_milestones_year(ax, *, label: bool = True, label_fontsize: float = 8) -> None:
+    """Milestone lines for an integer-year x-axis (annual bar charts)."""
+    for m in MILESTONES:
+        x = _frac_year(m.date)
+        ax.axvline(x, color=MILESTONE_COLOR, ls="--", lw=1.0, alpha=0.75, zorder=3)
+        if label:
+            ax.text(x, 0.975, f"{m.name} ", transform=ax.get_xaxis_transform(),
+                    rotation=90, ha="right", va="top", fontsize=label_fontsize,
+                    color=MILESTONE_COLOR, zorder=4, clip_on=True,
+                    bbox=dict(boxstyle="round,pad=0.15", fc="white", ec="none", alpha=0.55))
 
 
 def style_time_axis(ax, *, every: int = 2) -> None:
