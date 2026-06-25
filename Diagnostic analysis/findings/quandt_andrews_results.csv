@@ -1,0 +1,4 @@
+series,n,break (sup-Wald),supF,boot p,aveF,expF
+log(price),65,2015Q4,40.63,0.002,20.28,17.81
+YoY log revenue growth,60,2023Q2,52.16,0.002,14.92,22.36
+YoY log net-income growth,58,2023Q2,15.76,0.012,3.76,4.6
