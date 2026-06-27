@@ -101,3 +101,75 @@ confounders.
 - **Window edge.** Quarterly fundamentals end 2025Q4 while price runs to 2026Q1.
 - **No segment corroboration.** The annual Data Center segment-revenue source could not
   be verified and is treated as unreliable; no segment-based narrative is drawn.
+
+---
+
+# Pillar 2 · Return Co-movement & Decoupling
+
+**Question.** Does NVIDIA's daily-return co-movement with the market change across the
+three eras, and in the generative-AI era does it become *distinct* — most sharply from
+Intel? The hypothesis is a **ranked** prediction: decoupling ordered **INTC > AMD > NDX**
+(Intel most, the Nasdaq-100 least). SOX is excluded; comparators are INTC, AMD, NDX.
+
+> **Framing — distinctiveness, not causation.** Correlation is symmetric: a fall in
+> NVDA–INTC co-movement is equally consistent with NVIDIA pulling away on AI *and* with
+> Intel's own decline (its 2022–25 losses). This pillar evidences that NVIDIA's return
+> behaviour became *distinct*; it does not attribute a cause.
+
+## Method
+
+Daily log returns at native resolution. **Ranking** — Pearson correlation of NVDA vs each
+comparator computed once per era (no rolling, no overlap). **Dating** — 126-day rolling
+correlation, Fisher-z transformed, sampled monthly, with mean-shift Bai–Perron (BIC) and
+Quandt–Andrews (sup-Wald) breaks at 20% trimming and moving-block-bootstrap *p*-values to
+respect window overlap.
+
+## Results
+
+### Per-era correlation (clean, no overlap) — the ranking
+
+| Era | NVDA–INTC | NVDA–AMD | NVDA–NDX |
+|---|---|---|---|
+| Pre-Attention | 0.462 | 0.430 | 0.577 |
+| Transformer | 0.588 | 0.706 | 0.809 |
+| **Generative-AI** | **0.323** | **0.627** | **0.763** |
+
+Gen-AI ordering is exactly the hypothesised **INTC < AMD < NDX** (Intel most decoupled).
+Transformer→Gen-AI change: INTC −0.265, AMD −0.079, NDX −0.046 — ranked the same way.
+
+### Break tests on the rolling correlation — the dating
+
+| Pair | n (months) | Bai–Perron (BIC) | Quandt–Andrews | supF | block-boot *p* |
+|---|---|---|---|---|---|
+| NVDA–INTC | 189 | 2013-08, 2018-03, 2023-03 | **2023-02** | 34.7 | 0.07 |
+| NVDA–AMD | 189 | 2013-08, 2017-01, 2020-02, 2023-03 | 2019-03 | 133.3 | <0.01 |
+| NVDA–NDX | 189 | 2013-08, 2018-02, 2023-03 | 2018-02 | 206.4 | <0.01 |
+
+Figures: `figures/15_comovement_small_multiples.png`,
+`figures/16_comovement_spread_ndx.png`, `figures/17_comovement_per_era_bars.png`.
+Tables: `findings/comovement_per_era_corr.csv`, `findings/comovement_break_tests.csv`.
+
+## Reading
+
+* **The ranked prediction holds.** In the generative-AI era NVIDIA's daily-return
+  correlation is ordered **INTC 0.32 < AMD 0.63 < NDX 0.76** — Intel most decoupled, NDX
+  least — and the Transformer→Gen-AI decline is ranked identically.
+* **The Intel decoupling dates to gen-AI.** Of the three comparators, only NVDA–INTC has
+  its dominant co-movement break at the generative-AI onset (≈2023Q1). AMD's dominant break
+  is 2019 (its datacenter/Zen-2 ramp) and NDX's is 2018, neither at gen-AI. Significance is
+  indicative (*p*≈0.07) under the conservative overlap-robust bootstrap; the clean per-era
+  correlations carry the ranking.
+* **Distinctiveness, not cause.** The result shows NVIDIA's return behaviour became
+  distinct, most sharply from Intel and timed to gen-AI. It is **not** evidence that AI
+  *caused* it — the same fall is equally consistent with Intel's own decline, and a
+  symmetric correlation cannot separate the two.
+
+## Limitations
+
+- **NDX is a mechanical anchor.** NVIDIA is a large and growing Nasdaq-100 constituent,
+  which lifts NVDA–NDX correlation and partly explains NDX being least decoupled.
+- **Decoupling is a Transformer→Gen-AI effect, absolute only for Intel.** Against the
+  Pre-Attention baseline, AMD and NDX correlations *rose* (market-wide correlation drift);
+  only Intel falls in absolute terms.
+- **Overlap inflates naive significance.** Rolling windows are autocorrelated; the block
+  bootstrap mitigates this but the break-date significance is reported as indicative.

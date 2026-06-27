@@ -1,0 +1,4 @@
+era,INTC,AMD,NDX
+Pre-Attention / CNN,0.462,0.43,0.577
+Transformer,0.588,0.706,0.809
+Generative-AI,0.323,0.627,0.763
